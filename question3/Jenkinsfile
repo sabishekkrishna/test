@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = 'PaymentService'
+        APP_VERSION = 'v1.2.0'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out from repository...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Compile check of app.py for ${APP_NAME} (${APP_VERSION})..."
+                sh 'python -m py_compile question3/app.py'
+                echo 'Bytecode compilation check succeeded.'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    input message: "Approve deployment of ${APP_NAME} version ${APP_VERSION}?",
+                          ok: "Release"
+                }
+                echo "Approved! Deploying ${APP_NAME} ${APP_VERSION}..."
+                sh 'python question3/app.py'
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source repository...'
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies from requirements.txt...'
+                sh 'pip install -r question2/requirements.txt'
+            }
+        }
+
+        stage('Run Unit Tests (verbose)') {
+            steps {
+                echo 'Running unit tests with pytest -v...'
+                sh 'pytest -v question2/test_app.py'
+            }
+        }
+    }
+}

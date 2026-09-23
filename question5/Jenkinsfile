@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Target deployment environment'
+        )
+        booleanParam(
+            name: 'RUN_EXTRA_CHECK',
+            defaultValue: false,
+            description: 'Whether to run extra check'
+        )
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source repository...'
+                checkout scm
+            }
+        }
+
+        stage('Show Parameter') {
+            steps {
+                echo "Selected Environment: ${params.ENVIRONMENT}"
+                echo "Run Extra Check: ${params.RUN_EXTRA_CHECK}"
+            }
+        }
+
+        stage('Extra Check') {
+            when {
+                expression { params.RUN_EXTRA_CHECK == true }
+            }
+            steps {
+                echo "Running extra check for ${params.ENVIRONMENT} environment..."
+                sh 'python question5/app.py --extra'
+            }
+        }
+    }
+}

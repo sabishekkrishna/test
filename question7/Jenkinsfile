@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source repository...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Compiling app.py...'
+                sh 'python -m py_compile question7/app.py'
+
+                echo 'Waiting 15 seconds...'
+                sleep 15
+
+                echo 'Passing milestone(1)...'
+                milestone(1)
+            }
+        }
+
+        stage('Send Notification') {
+            steps {
+                script {
+                    try {
+                        mail to: 'developer@example.com',
+                             subject: "Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                             body: "Build completed successfully. View URL: ${env.BUILD_URL}"
+                        echo "Notification email sent to developer@example.com."
+                    } catch (Exception e) {
+                        // Workaround if SMTP server is not configured in Jenkins
+                        echo "=== SMTP Not Configured (Echo Fallback) ==="
+                        echo "Recipient: developer@example.com"
+                        echo "Subject: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                        echo "Body: Build completed successfully. View URL: ${env.BUILD_URL}"
+                        echo "==========================================="
+                    }
+                }
+            }
+        }
+    }
+}

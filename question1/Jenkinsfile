@@ -1,0 +1,42 @@
+pipeline {
+    agent {
+        label 'windows'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out from GitHub repository...'
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies from requirements.txt...'
+                bat 'python -m pip install --upgrade pip'
+                bat 'pip install -r question1/requirements.txt'
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                echo 'Running unit tests with pytest...'
+                bat 'pytest question1/test_app.py'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '=================================================='
+            echo 'Build Succeeded: All unit tests passed!'
+            echo '=================================================='
+        }
+        failure {
+            echo '=================================================='
+            echo 'Build Failed: Unit tests failed or an error occurred!'
+            echo '=================================================='
+        }
+    }
+}

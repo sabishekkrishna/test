@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source repository...'
+                checkout scm
+            }
+        }
+
+        stage('Parallel Checks') {
+            parallel {
+                stage('Frontend Check') {
+                    steps {
+                        echo 'Running frontend check...'
+                        sh 'python question6/frontend_check.py'
+                    }
+                }
+                stage('Backend Check') {
+                    steps {
+                        echo 'Running backend check...'
+                        sh 'python question6/backend_check.py'
+                    }
+                }
+            }
+        }
+
+        stage('Archive Reports') {
+            steps {
+                echo 'Archiving test reports...'
+                archiveArtifacts artifacts: 'question6/*.txt', fingerprint: true
+            }
+        }
+    }
+}

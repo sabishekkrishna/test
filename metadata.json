@@ -1,0 +1,6 @@
+{
+  "name": "Jenkins Pipeline Lab Repository & Code Suite",
+  "description": "Complete source code, Jenkinsfiles, and interactive build simulations for 7 Jenkins pipeline assignments organized into separate GitHub repository folders.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

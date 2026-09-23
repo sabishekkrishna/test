@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source repository...'
+                checkout scm
+            }
+        }
+
+        stage('Show Build Info') {
+            steps {
+                echo '================ BUILD INFO ================'
+                echo "BUILD_NUMBER: ${env.BUILD_NUMBER}"
+                echo "JOB_NAME:     ${env.JOB_NAME}"
+                echo "WORKSPACE:    ${env.WORKSPACE}"
+                echo '============================================'
+            }
+        }
+
+        stage('Run Linter') {
+            steps {
+                echo 'Running flake8 linter on app.py...'
+                sh 'pip install -r question4/requirements.txt'
+                sh 'flake8 question4/app.py'
+            }
+        }
+    }
+}
